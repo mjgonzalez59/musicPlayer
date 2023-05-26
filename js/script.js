@@ -54,7 +54,8 @@ const playPrevSong = function(){
 }
 
 const playNextSong = function(){
-  songIndex++;
+  const repeatBtnText = repeatBtn.innerText;
+  repeatBtnText == "shuffle" ? playShuffleSong() : songIndex++;
   songIndex > allSongs.length ? songIndex = 1 : songIndex = songIndex;
   loadSong(songIndex);
   playSong();
@@ -166,6 +167,17 @@ const deleteSongInShuffleArray = function(randomSong){
   shuffleArray.splice(indexSong, 1);
 }
 
+const playShuffleSong = function(){
+  let randomIndex = Math.floor((Math.random() * allSongs.length) + 1);
+  let existInShuffleArray = true;
+  do{
+    randomIndex = Math.floor((Math.random() * allSongs.length) + 1);
+    existInShuffleArray = existSongShuffleArray(randomIndex);
+  }while(!existInShuffleArray);
+  deleteSongInShuffleArray(allSongs[randomIndex - 1]);
+  songIndex = randomIndex;
+}
+
 mainAudio.addEventListener("ended", () => {
   let repeatBtnText = repeatBtn.innerText;
   console.log(repeatBtnText);
@@ -179,14 +191,7 @@ mainAudio.addEventListener("ended", () => {
       playSong();
       break;
     case "shuffle":
-      let randomIndex = Math.floor((Math.random() * allSongs.length) + 1);
-      let existInShuffleArray = true;
-      do{
-        randomIndex = Math.floor((Math.random() * allSongs.length) + 1);
-        existInShuffleArray = existSongShuffleArray(randomIndex);
-      }while(!existInShuffleArray);
-      deleteSongInShuffleArray(allSongs[randomIndex - 1]);
-      songIndex = randomIndex;
+      playShuffleSong();
       loadSong(songIndex);
       playSong();
       playingSong();
